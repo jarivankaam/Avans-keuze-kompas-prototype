@@ -1,0 +1,42 @@
+# .github/workflows/ci.yml
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      # Linting
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run test
+      
+      # Python linting
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - run: pip install ruff
+      - run: ruff check ./ai
+  
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: snyk/actions/setup@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - run: snyk test
