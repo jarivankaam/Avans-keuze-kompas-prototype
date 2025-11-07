@@ -10,16 +10,16 @@ type Props = {
 };
 
 export default function VKMForm({ onSuccess, initialData }: Props) {
-  const [formData, setFormData] = useState({
-    id: 0,
-    name: "",
-    shortdescription: "",
-    content: "",
-    studycredit: 0,
-    location: "",
-    contact_id: 0,
-    level: "",
-  });
+  const [formData, setFormData] = useState<VKMInput>({
+  id: 0,
+  name: "",
+  shortdescription: "",
+  content: "",
+  studycredit: 0,
+  location: "",
+  contact_id: 0,
+  level: "",
+});
 
   useEffect(() => {
     if (initialData) {
