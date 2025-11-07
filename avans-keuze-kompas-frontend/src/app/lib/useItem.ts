@@ -51,7 +51,7 @@ const editItem = async (id: string, item: { name: string; description: string })
     if (!existing) return;
 
     const payload: VKMInput = {
-        id: existing.id,
+        id: existing._id,
         name: item.name,
         shortdescription: item.description,
         content: existing.content,
