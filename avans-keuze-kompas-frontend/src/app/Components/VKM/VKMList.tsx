@@ -67,7 +67,7 @@ export default function VKMList() {
                 Edit
               </button>
               <button
-                onClick={() => handleDelete(vkm._id.toString())}
+                onClick={() => handleDelete(vkm._id)}
                 className="text-red-600"
               >
                 Delete
