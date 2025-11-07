@@ -1,6 +1,6 @@
 // lib/authClient.ts
 const TOKEN_KEY = "token";
-const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE = "http://akk-backend.panel.evonix-development.tech";
 
 export function getToken(): string | null {
   return typeof window !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null;
