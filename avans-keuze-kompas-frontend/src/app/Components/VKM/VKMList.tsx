@@ -22,7 +22,7 @@ export default function VKMList() {
 
   async function handleDelete(_id: number | string) {
     if (!confirm("Are you sure you want to delete this VKM?")) return;
-    await deleteItem(_id);
+    await deleteItem(String(_id));
     load();
   }
 
