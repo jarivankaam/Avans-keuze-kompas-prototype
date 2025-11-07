@@ -5,7 +5,7 @@ import { getItems, createItem, updateItem } from './api';
 import { VKMInput } from "@/app/types/VKM";  // ✅ adjust path if needed
 
 export type Item = {
-  id: string;
+  _id: string;
   name: string;
   shortdescription: string;
   description: string;
