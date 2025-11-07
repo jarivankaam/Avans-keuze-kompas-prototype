@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { createItem, updateItem } from "../../lib/api";
-import { VKM } from "@/app/types/VKM";
+import { VKM, VKMInput } from "@/app/types/VKM";
 
 type Props = {
   onSuccess?: () => void;
