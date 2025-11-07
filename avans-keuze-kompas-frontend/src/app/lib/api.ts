@@ -1,7 +1,7 @@
 import { getToken } from "./auth/authClient";
 import { VKMInput } from "@/app/types/VKM";
 
-const API_BASE = https://akk-backend.panel.evonix-development.tech;
+const API_BASE = "https://akk-backend.panel.evonix-development.tech";
 
 function getAuthHeaders(): HeadersInit {
   const token = getToken();
