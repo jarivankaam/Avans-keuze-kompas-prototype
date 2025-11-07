@@ -46,12 +46,27 @@ export function useItems() {
     setItems(prev => [...prev, newItem]);
   };
 
-  // ✅ Edit
-  const editItem = async (id: string, item: { name: string; description: string }) => {
-    const updated = await updateItem(id, item);
-    setItems(prev => prev.map(i => (i.id === id ? updated : i)));
-  };
+const editItem = async (id: string, item: { name: string; description: string }) => {
+    const existing = items.find(i => String(i._id) === String(id));
+    if (!existing) return;
 
+    const payload: VKMInput = {
+        id: existing.id,
+        name: item.name,
+        shortdescription: item.description,
+        content: existing.content,
+        studycredit: existing.studycredit,
+        location: existing.location,
+        contact_id: existing.contact_id,
+        level: existing.level,
+    };
+
+    const updated = await updateItem(id, payload);
+
+    setItems(prev => prev.map(i =>
+        String(i._id) === String(id) ? updated : i
+    ));
+};
   // ✅ ✅ Correct: return from the hook, not inside addItem
   return { items, loading, addItem, editItem };
 }
