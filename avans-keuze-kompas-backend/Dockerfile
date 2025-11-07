@@ -17,6 +17,6 @@ RUN npm run build
 # Remove dev dependencies to shrink image
 RUN npm prune --production
 
-EXPOSE 3001
+EXPOSE 4000
 
 CMD ["node", "dist/main.js"]
