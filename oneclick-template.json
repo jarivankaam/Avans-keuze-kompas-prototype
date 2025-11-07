@@ -1,0 +1,36 @@
+{
+  "$schema": "https://getcaprover.com/schemas/one-click.json",
+  "captainVersion": 4,
+  "documentation": "Deploy backend + frontend (monorepo)",
+  "services": [
+    {
+      "serviceName": "akk-backend",
+      "dockerfilePath": "./avans-keuze-kompas-backend/Dockerfile",
+      "envVars": {
+        "NODE_ENV": "production"
+      },
+      "ports": [
+        { "containerPort": "3000" }
+      ]
+    },
+    {
+      "serviceName": "akk-frontend",
+      "dockerfilePath": "./avans-keuze-kompas-frontend/Dockerfile",
+      "envVars": {
+        "NODE_ENV": "production",
+        "NEXT_PUBLIC_API_URL": "%%API_URL%%"
+      },
+      "ports": [
+        { "containerPort": "3000" }
+      ]
+    }
+  ],
+  "variables": [
+    {
+      "id": "API_URL",
+      "label": "Backend API URL",
+      "defaultValue": "https://backend.example.com"
+    }
+  ]
+}
+
