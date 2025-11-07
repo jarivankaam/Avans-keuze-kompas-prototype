@@ -12,7 +12,7 @@ export type VKM = {
   learningoutcomes: string;
 };
 export type VKMInput = {
-  id: number;
+  id: number | string;
   name: string;
   shortdescription: string;
   content: string;
