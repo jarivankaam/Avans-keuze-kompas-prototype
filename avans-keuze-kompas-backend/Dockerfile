@@ -2,19 +2,21 @@ FROM node:18-alpine
 
 WORKDIR /app
 
+# Copy package files
 COPY avans-keuze-kompas-backend/package*.json ./
 
-# ✅ install ALL dependencies including Nest CLI
+# Install ALL deps (Nest CLI is in devDependencies)
 RUN npm install
 
+# Copy source
 COPY avans-keuze-kompas-backend .
 
-# ✅ run nest build using CLI from devDependencies
+# Build NestJS app
 RUN npm run build
 
-# ✅ after build, remove dev deps for smaller image (optional)
+# Remove dev dependencies to shrink image
 RUN npm prune --production
 
-CMD ["node", "dist/main.js"]
-]
+EXPOSE 3000
 
+CMD ["node", "dist/main.js"]
