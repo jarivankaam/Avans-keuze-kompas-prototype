@@ -1,4 +1,5 @@
 import { getToken } from "./auth/authClient";
+import { VKMInput } from "@/app/types/VKM";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 
@@ -25,15 +26,9 @@ export async function getItem(id: string) {
   return res.json();
 }
 
-export async function createItem(item: {
-  id: number;
-  shortdescription: string;
-  content: string;
-  studycredit: number;
-  location: string;
-  contact_id: number;
-  level: string;
-}) {
+
+
+export async function createItem(item: VKMInput) {
   const res = await fetch(`${API_BASE}/vkm`, {
     method: "POST",
     headers: {
@@ -52,19 +47,19 @@ export async function createItem(item: {
   return res.json();
 }
 
-export async function updateItem(id: number, data: any) {
+export async function updateItem(id: number, data: VKMInput) {
   const res = await fetch(`${API_BASE}/vkm/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      ...getAuthHeaders(), // include JWT if needed
+      ...getAuthHeaders(),
     },
     body: JSON.stringify(data),
   });
 
   if (!res.ok) {
     const err = await res.json();
-    console.error("❌ Update VKM failed:", err);
+    console.error("Update VKM failed:", err);
     throw new Error("Failed to update VKM");
   }
 
