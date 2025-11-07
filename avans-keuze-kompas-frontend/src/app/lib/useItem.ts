@@ -27,9 +27,17 @@ export function useItems() {
             .finally(() => setLoading(false));
     }, []);
 
-    const addItem = async (item: { name: string; description: string }) => {
-        const newItem = await createItem(item);
-        setItems(prev => [...prev, newItem]);
+   const addItem = async (item: { name: string; description: string }) => {
+    // ✅ Build a valid VKMInput object
+    const payload: VKMInput = {
+        id: Date.now(),               // or 0 if your backend assigns it
+        name: item.name,
+        shortdescription: item.description,
+        content: "",
+        studycredit: 0,
+        location: "",
+        contact_id: 0,
+        level: "",
     };
 
     const editItem = async (id: string, item: { name: string; description: string }) => {
