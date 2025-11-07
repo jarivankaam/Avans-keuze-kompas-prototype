@@ -47,7 +47,7 @@ export async function createItem(item: VKMInput) {
   return res.json();
 }
 
-export async function updateItem(id: number, data: VKMInput) {
+export async function updateItem(id: string | number, data: VKMInput) {
   const res = await fetch(`${API_BASE}/vkm/${id}`, {
     method: "PUT",
     headers: {
