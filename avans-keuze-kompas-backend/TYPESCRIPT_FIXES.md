@@ -76,6 +76,8 @@ export default () => ({
 
 **Before:**
 ```typescript
+import { JwtModule } from '@nestjs/jwt';
+
 useFactory: (configService: ConfigService) => ({
   secret: configService.get<string>('jwt.secret'),
   signOptions: {
@@ -86,18 +88,19 @@ useFactory: (configService: ConfigService) => ({
 
 **After:**
 ```typescript
-useFactory: (configService: ConfigService) => {
-  const expiresIn = configService.get<string>('jwt.expiresIn') || '1d';
+import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';  // ✅ Import JwtModuleOptions
+
+useFactory: (configService: ConfigService): JwtModuleOptions => {  // ✅ Explicit return type
   return {
     secret: configService.get<string>('jwt.secret') || 'fallback-secret',
     signOptions: {
-      expiresIn: expiresIn as string | number,  // ✅ Type cast for JWT strict typing
+      expiresIn: (configService.get<string>('jwt.expiresIn') || '1d') as any,  // ✅ Use 'as any' workaround
     },
   };
 },
 ```
 
-**Note:** JWT module expects `expiresIn` to be `number | StringValue`, so we use a type assertion to satisfy TypeScript.
+**Note:** JWT module has strict typing for `expiresIn` that doesn't accept plain strings in newer versions. Using `as any` is a pragmatic workaround since the JWT library actually accepts string values like '1d' at runtime.
 
 ---
 
