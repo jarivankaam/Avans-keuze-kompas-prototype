@@ -194,10 +194,12 @@ class AuthManager {
 
 	/**
 	 * Check if user is authenticated
+	 * Works with both token (in memory) and cookie-based auth
 	 */
 	isAuthenticated(): boolean {
-		const token = this.getToken();
-		return token !== null && this.decodedToken !== null;
+		// User is authenticated if we have decoded token data
+		// This works for both cookie-based auth and token-based auth
+		return this.decodedToken !== null;
 	}
 
 	/**
