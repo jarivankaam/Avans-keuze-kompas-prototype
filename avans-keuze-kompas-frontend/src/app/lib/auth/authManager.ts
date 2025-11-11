@@ -43,10 +43,11 @@ class AuthManager {
 	 * Use AuthManager.getInstance() instead
 	 */
 	private constructor() {
-		// On initialization, check if user is logged in via cookie
-		if (typeof window !== "undefined") {
-			this.initializeSession();
-		}
+		// TEMPORARILY DISABLED: Session initialization causing 502 errors
+		// TODO: Re-enable once reverse proxy CORS is configured
+		// if (typeof window !== "undefined") {
+		// 	this.initializeSession();
+		// }
 	}
 
 	/**
