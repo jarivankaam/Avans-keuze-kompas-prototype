@@ -16,7 +16,7 @@ export interface JWTPayload {
 }
 
 export interface LoginResponse {
-	token: string;
+	access_token: string;
 	user?: {
 		id: number;
 		email: string;
@@ -43,10 +43,9 @@ class AuthManager {
 	 * Use AuthManager.getInstance() instead
 	 */
 	private constructor() {
-		// Initialize token from localStorage on creation (client-side only)
-		if (typeof window !== "undefined") {
-			this.loadTokenFromStorage();
-		}
+		// Note: We no longer load from localStorage for security.
+		// Token is stored in memory only, and httpOnly cookie handles auth.
+		// On page reload, user state is lost - consider adding /auth/me endpoint
 	}
 
 	/**
@@ -61,14 +60,11 @@ class AuthManager {
 
 	/**
 	 * Load token from localStorage
+	 * @deprecated No longer used - tokens stored in memory only for security
 	 */
 	private loadTokenFromStorage(): void {
-		if (typeof window === "undefined") return;
-
-		const storedToken = localStorage.getItem(this.config.TOKEN_KEY);
-		if (storedToken) {
-			this.setToken(storedToken);
-		}
+		// Intentionally empty - we no longer use localStorage for security reasons
+		// The httpOnly cookie handles authentication, token in memory is for user info only
 	}
 
 	/**
@@ -103,15 +99,16 @@ class AuthManager {
 
 	/**
 	 * Set token and update state
+	 * Note: Token is stored in memory only, not localStorage
+	 * The httpOnly cookie handles actual authentication
 	 */
 	setToken(token: string): void {
 		this.token = token;
 		this.decodedToken = this.decodeToken(token);
 
-		// Store in localStorage (client-side only)
-		if (typeof window !== "undefined") {
-			localStorage.setItem(this.config.TOKEN_KEY, token);
-		}
+		// We intentionally do NOT store in localStorage for security
+		// The httpOnly cookie set by the backend handles authentication
+		// This token is kept in memory only to decode user information
 
 		// Validate token
 		if (this.decodedToken && this.isTokenExpired(this.decodedToken)) {
@@ -152,10 +149,8 @@ class AuthManager {
 		this.token = null;
 		this.decodedToken = null;
 
-		// Clear from localStorage
-		if (typeof window !== "undefined") {
-			localStorage.removeItem(this.config.TOKEN_KEY);
-		}
+		// We no longer use localStorage, so nothing to clear there
+		// The httpOnly cookie will be cleared by calling the logout endpoint
 
 		// Clear refresh timer
 		if (this.refreshTimer) {
@@ -207,8 +202,8 @@ class AuthManager {
 
 			const data: LoginResponse = await response.json();
 
-			if (data.token) {
-				this.setToken(data.token);
+			if (data.access_token) {
+				this.setToken(data.access_token);
 			}
 
 			return data;
@@ -221,10 +216,18 @@ class AuthManager {
 	/**
 	 * Logout user
 	 */
-	logout(): void {
+	async logout(): Promise<void> {
 		this.clearToken();
-		// Optionally call logout endpoint
-		// await fetch(this.config.getApiUrl("/auth/logout"), { method: "POST" });
+		// Call logout endpoint to clear httpOnly cookie
+		try {
+			await fetch(this.config.getApiUrl("/auth/logout"), {
+				method: "POST",
+				credentials: "include" // Important: send the cookie to be cleared
+			});
+		} catch (error) {
+			console.error("Logout endpoint error:", error);
+			// Continue with local logout even if endpoint fails
+		}
 	}
 
 	/**
@@ -268,8 +271,8 @@ class AuthManager {
 
 			if (response.ok) {
 				const data = await response.json();
-				if (data.token) {
-					this.setToken(data.token);
+				if (data.access_token) {
+					this.setToken(data.access_token);
 				}
 			} else {
 				// Refresh failed - logout user
