@@ -5,7 +5,7 @@
  */
 
 import { getConfig } from "./config";
-import type { VKMInput } from "@/app/types/VKM";
+import type { VKM, VKMInput } from "@/app/types/VKM";
 
 // Types for better type safety
 export interface ApiError {
@@ -215,36 +215,36 @@ class ApiClient {
 	/**
 	 * Get all VKM items
 	 */
-	async getVKMItems() {
-		return this.get("/vkm");
+	async getVKMItems(): Promise<VKM[]> {
+		return this.get<VKM[]>("/vkm");
 	}
 
 	/**
 	 * Get a single VKM item by ID
 	 */
-	async getVKMItem(id: string) {
-		return this.get(`/vkm/${id}`);
+	async getVKMItem(id: string): Promise<VKM> {
+		return this.get<VKM>(`/vkm/${id}`);
 	}
 
 	/**
 	 * Create a new VKM item
 	 */
-	async createVKMItem(item: VKMInput) {
-		return this.post("/vkm", item);
+	async createVKMItem(item: VKMInput): Promise<VKM> {
+		return this.post<VKM>("/vkm", item);
 	}
 
 	/**
 	 * Update a VKM item
 	 */
-	async updateVKMItem(id: string | number, data: VKMInput) {
-		return this.put(`/vkm/${id}`, data);
+	async updateVKMItem(id: string | number, data: VKMInput): Promise<VKM> {
+		return this.put<VKM>(`/vkm/${id}`, data);
 	}
 
 	/**
 	 * Delete a VKM item
 	 */
-	async deleteVKMItem(id: string) {
-		return this.delete(`/vkm/${id}`);
+	async deleteVKMItem(id: string): Promise<void> {
+		return this.delete<void>(`/vkm/${id}`);
 	}
 }
 
