@@ -1,31 +1,48 @@
-// lib/authClient.ts
-const TOKEN_KEY = "token";
-const API_BASE = "http://akk-backend.panel.evonix-development.tech";
+/**
+ * Auth Client - Refactored to use AuthManager Singleton
+ * This file maintains backward compatibility while using the new AuthManager
+ *
+ * NOTE: New code should import and use getAuthManager() directly from authManager.ts
+ * These functions are maintained for backward compatibility with existing code
+ */
 
+import { getAuthManager } from "./authManager";
+
+// Get the singleton instance
+const authManager = getAuthManager();
+
+/**
+ * Get authentication token
+ * @deprecated Use getAuthManager().getToken() instead
+ */
 export function getToken(): string | null {
-  return typeof window !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null;
+	return authManager.getToken();
 }
 
-export function setToken(token: string) {
-  if (typeof window !== "undefined") {
-    localStorage.setItem(TOKEN_KEY, token);
-  }
+/**
+ * Set authentication token
+ * @deprecated Use getAuthManager().setToken(token) instead
+ */
+export function setToken(token: string): void {
+	authManager.setToken(token);
 }
 
-export function clearToken() {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem(TOKEN_KEY);
-  }
+/**
+ * Clear authentication token (logout)
+ * @deprecated Use getAuthManager().logout() instead
+ */
+export function clearToken(): void {
+	authManager.clearToken();
 }
 
+/**
+ * Login user with email and password
+ * @deprecated Use getAuthManager().login(email, password) instead
+ */
 export async function loginUser(email: string, password: string) {
-  const res = await fetch(`${API_BASE}/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-    credentials: "include", // 👈 ensures cookies are stored
-  });
-
-  if (!res.ok) throw new Error("Login failed");
-  return res.json();
+	return authManager.login(email, password);
 }
+
+// Re-export the AuthManager for convenience
+export { getAuthManager } from "./authManager";
+export type { JWTPayload, LoginResponse, AuthState } from "./authManager";
