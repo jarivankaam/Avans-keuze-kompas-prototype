@@ -114,6 +114,7 @@ class ApiClient {
 		const fetchOptions: RequestInit = {
 			...options,
 			headers: this.buildHeaders(options, requiresAuth),
+			credentials: "include", // Send cookies with requests
 		};
 
 		try {
