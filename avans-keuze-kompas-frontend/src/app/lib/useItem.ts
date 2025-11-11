@@ -5,21 +5,11 @@ import { getItems, createItem, updateItem } from './api';
 import type { VKM } from "@/app/types/VKM";
 import VKMFactory from './factories/VKMFactory';
 
-export type Item = {
-  _id: string;
-  name: string;
-  shortdescription: string;
-  description: string;
-  content: string;
-  studycredit: number;
-  location: string;
-  contact_id: number;
-  level: string;
-  learningoutcomes: string;
-};
+// Re-export VKM as Item for backward compatibility
+export type Item = VKM;
 
 export function useItems() {
-  const [items, setItems] = useState<Item[]>([]);
+  const [items, setItems] = useState<VKM[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Fetch items on mount
@@ -42,7 +32,7 @@ export function useItems() {
     }
 
     const newItem = await createItem(payload);
-    setItems(prev => [...prev, newItem]);
+    setItems(prev => [...prev, newItem as VKM]);
   };
 
   // Edit existing item using VKMFactory
@@ -51,7 +41,7 @@ export function useItems() {
     if (!existing) return;
 
     // Use VKMFactory to create updated VKM input from existing item
-    const payload = VKMFactory.createFromExisting(existing as unknown as VKM, {
+    const payload = VKMFactory.createFromExisting(existing, {
       name: item.name,
       shortdescription: item.description,
     });
@@ -65,7 +55,7 @@ export function useItems() {
     const updated = await updateItem(id, payload);
 
     setItems(prev => prev.map(i =>
-      String(i._id) === String(id) ? updated : i
+      String(i._id) === String(id) ? (updated as VKM) : i
     ));
   };
 
