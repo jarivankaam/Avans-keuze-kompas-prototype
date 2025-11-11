@@ -86,13 +86,18 @@ useFactory: (configService: ConfigService) => ({
 
 **After:**
 ```typescript
-useFactory: (configService: ConfigService) => ({
-  secret: configService.get<string>('jwt.secret') || 'fallback-secret',  // ✅ Fallback added
-  signOptions: {
-    expiresIn: configService.get<string>('jwt.expiresIn') || '1d',       // ✅ Fallback added
-  },
-}),
+useFactory: (configService: ConfigService) => {
+  const expiresIn = configService.get<string>('jwt.expiresIn') || '1d';
+  return {
+    secret: configService.get<string>('jwt.secret') || 'fallback-secret',
+    signOptions: {
+      expiresIn: expiresIn as string | number,  // ✅ Type cast for JWT strict typing
+    },
+  };
+},
 ```
+
+**Note:** JWT module expects `expiresIn` to be `number | StringValue`, so we use a type assertion to satisfy TypeScript.
 
 ---
 
