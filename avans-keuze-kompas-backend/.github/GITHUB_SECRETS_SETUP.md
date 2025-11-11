@@ -76,6 +76,10 @@ If you're deploying to a server via SSH, you'll also need:
 7. Click **Add secret**
 8. Repeat for all required secrets
 
+## Note on NestJS 11 Compatibility
+
+This project uses `@nestjs/config@3.3.0` which is compatible with NestJS 11. The Dockerfile uses `npm install --legacy-peer-deps` to handle peer dependency resolution.
+
 ## Environment-Specific Secrets
 
 You can create different secrets for different environments:
