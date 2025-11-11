@@ -1,5 +1,4 @@
 {
   "schemaVersion": 2,
-  "dockerfilePath": "./avans-keuze-kompas-frontend/Dockerfile"
+  "dockerfilePath": "./avans-keuze-kompas-backend/Dockerfile"
 }
-
