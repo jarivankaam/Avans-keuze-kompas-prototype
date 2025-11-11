@@ -1,21 +1,26 @@
 import { Controller, Get, Post, UseGuards, Request, Res } from '@nestjs/common';
 import type { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
+import { ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private configService: ConfigService,
+  ) {}
 
   @UseGuards(AuthGuard('local'))
   @Post('login')
   async login(@Request() req, @Res({ passthrough: true }) res: Response) {
     const token = await this.authService.login(req.user);
+    const isProduction = this.configService.get<string>('nodeEnv') === 'production';
 
     res.cookie('access_token', token.access_token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' for cross-origin, requires secure
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax', // 'none' for cross-origin, requires secure
       domain: '.panel.evonix-development.tech', // Share cookie across all subdomains
       maxAge: 24 * 60 * 60 * 1000,
     });
