@@ -26,11 +26,17 @@ Two changes were made:
 ### 2. Updated Dockerfile
 
 ```dockerfile
-# Use --legacy-peer-deps to handle peer dependency conflicts
+# Install with --legacy-peer-deps to handle peer dependency conflicts
 RUN npm install --legacy-peer-deps
+
+# Build application
+RUN npm run build
+
+# Prune with --legacy-peer-deps as well
+RUN npm prune --production --legacy-peer-deps
 ```
 
-The `--legacy-peer-deps` flag tells npm to use the legacy (npm v6) peer dependency resolution algorithm, which is more lenient.
+The `--legacy-peer-deps` flag tells npm to use the legacy (npm v6) peer dependency resolution algorithm, which is more lenient. This flag is needed for both `npm install` and `npm prune` commands.
 
 ## Why --legacy-peer-deps?
 

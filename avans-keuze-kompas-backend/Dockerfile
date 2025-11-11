@@ -16,7 +16,8 @@ COPY ./avans-keuze-kompas-backend/ .
 RUN npm run build
 
 # Remove dev dependencies to shrink image
-RUN npm prune --production
+# Use --legacy-peer-deps to handle peer dependency conflicts
+RUN npm prune --production --legacy-peer-deps
 
 EXPOSE 4000
 
