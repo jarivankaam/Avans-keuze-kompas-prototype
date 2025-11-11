@@ -9,7 +9,8 @@ import { jwtDecode } from "jwt-decode";
 
 export interface JWTPayload {
 	email: string;
-	id: number;
+	id?: number;
+	sub?: string;
 	exp: number;
 	iat: number;
 	is_admin?: boolean;
