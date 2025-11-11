@@ -7,12 +7,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Enable cookie parser (required for reading cookies)
-  app.use(cookieParser);
+  app.use(cookieParser());
 
   // Enable CORS with credentials support
   app.enableCors({
     origin: 'http://akk-frontend.panel.evonix-development.tech',
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'FETCH'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
     exposedHeaders: ['Set-Cookie'],
   });
