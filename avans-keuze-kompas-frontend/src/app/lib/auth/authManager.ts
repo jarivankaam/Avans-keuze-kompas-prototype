@@ -72,11 +72,10 @@ class AuthManager {
 				};
 				this.notifyAuthStateChange();
 			}
-		} catch (error) {
-			// No valid session, user needs to login
-			console.log("No active session");
-		}
-	}
+		            // No valid session, user needs to login
+		        } catch (error) {
+		            // No valid session, user needs to login
+		        }	}
 
 	/**
 	 * Get the singleton instance of AuthManager
@@ -104,7 +103,6 @@ class AuthManager {
 		try {
 			return jwtDecode<JWTPayload>(token);
 		} catch (error) {
-			console.error("Failed to decode token:", error);
 			return null;
 		}
 	}
@@ -240,7 +238,6 @@ class AuthManager {
 
 			return data;
 		} catch (error) {
-			console.error("Login error:", error);
 			throw error;
 		}
 	}
@@ -257,7 +254,6 @@ class AuthManager {
 				credentials: "include" // Important: send the cookie to be cleared
 			});
 		} catch (error) {
-			console.error("Logout endpoint error:", error);
 			// Continue with local logout even if endpoint fails
 		}
 	}
@@ -311,7 +307,6 @@ class AuthManager {
 				this.logout();
 			}
 		} catch (error) {
-			console.error("Token refresh failed:", error);
 			this.logout();
 		}
 	}

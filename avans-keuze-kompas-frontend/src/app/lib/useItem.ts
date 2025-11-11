@@ -16,7 +16,6 @@ export function useItems() {
   useEffect(() => {
     getItems()
       .then(setItems)
-      .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
 

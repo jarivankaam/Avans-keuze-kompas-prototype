@@ -73,7 +73,6 @@ export default function VKMForm({ onSuccess, initialData }: Props) {
 
       onSuccess?.();
     } catch (err) {
-      console.error("❌ Error saving VKM:", err);
       alert("Error saving VKM");
     }
   };

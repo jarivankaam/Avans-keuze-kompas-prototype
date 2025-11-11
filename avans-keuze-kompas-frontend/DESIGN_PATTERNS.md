@@ -118,8 +118,6 @@ try {
   const items = await apiClient.getVKMItems();
 } catch (error) {
   const apiError = error as ApiError;
-  console.error(`Error ${apiError.status}: ${apiError.message}`);
-  console.error('Details:', apiError.details);
 }
 ```
 
@@ -149,7 +147,7 @@ const response = await authManager.login('user@example.com', 'password');
 
 // Check authentication status
 if (authManager.isAuthenticated()) {
-  console.log('User is logged in');
+  // User is logged in
 }
 
 // Get current token
@@ -157,14 +155,13 @@ const token = authManager.getToken();
 
 // Get decoded token data
 const userData = authManager.getDecodedToken();
-console.log('User email:', userData?.email);
 
 // Get full auth state
 const authState = authManager.getAuthState();
 
 // Subscribe to auth state changes
 const unsubscribe = authManager.subscribe((state) => {
-  console.log('Auth state changed:', state);
+  // Auth state changed
 });
 
 // Logout
@@ -273,7 +270,7 @@ const vkm = VKMFactory.createNew('', ''); // Invalid: empty fields
 
 // Get validation errors
 const errors = VKMFactory.validate(vkm);
-console.log(errors); // ['Name is required', 'Short description is required']
+// errors is ['Name is required', 'Short description is required']
 
 // Check if valid
 if (VKMFactory.isValid(vkm)) {
@@ -466,7 +463,6 @@ if (VKMFactory.isValid(vkmData)) {
   await apiClient.createVKMItem(vkmData);
 } else {
   const errors = VKMFactory.validate(vkmData);
-  console.error('Validation errors:', errors);
 }
 ```
 

@@ -47,7 +47,6 @@ export function useAuth() {
 
       return response;
     } catch (err) {
-      console.error("Login failed:", err);
       throw err;
     }
   }

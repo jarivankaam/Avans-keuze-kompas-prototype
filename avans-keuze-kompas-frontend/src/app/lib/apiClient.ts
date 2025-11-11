@@ -95,7 +95,7 @@ class ApiClient {
 		};
 
 		if (!this.config.IS_PRODUCTION) {
-			console.error("API Error:", error);
+			// console.error("API Error:", error);
 		}
 
 		throw error;
