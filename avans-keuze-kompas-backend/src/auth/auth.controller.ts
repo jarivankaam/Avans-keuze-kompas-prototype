@@ -16,6 +16,7 @@ export class AuthController {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' for cross-origin, requires secure
+      domain: process.env.NODE_ENV === 'production' ? '.panel.evonix-development.tech' : undefined, // Share cookie across subdomains
       maxAge: 24 * 60 * 60 * 1000,
     });
 
