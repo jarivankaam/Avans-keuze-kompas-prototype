@@ -15,7 +15,15 @@ export class AuthController {
   @Post('login')
   async login(@Request() req, @Res({ passthrough: true }) res: Response) {
     const token = await this.authService.login(req.user);
-    const isProduction = this.configService.get<string>('nodeEnv') === 'production';
+    const nodeEnv = this.configService.get<string>('nodeEnv');
+    const isProduction = nodeEnv === 'production';
+
+    console.log('🍪 Cookie Configuration:');
+    console.log('  NODE_ENV:', nodeEnv);
+    console.log('  isProduction:', isProduction);
+    console.log('  secure:', isProduction);
+    console.log('  sameSite:', isProduction ? 'none' : 'lax');
+    console.log('  domain:', '.panel.evonix-development.tech');
 
     res.cookie('access_token', token.access_token, {
       httpOnly: true,
@@ -24,6 +32,8 @@ export class AuthController {
       domain: '.panel.evonix-development.tech', // Share cookie across all subdomains
       maxAge: 24 * 60 * 60 * 1000,
     });
+
+    console.log('✅ Cookie set successfully');
 
     return token; // ✅ frontend now gets { access_token }
   }
