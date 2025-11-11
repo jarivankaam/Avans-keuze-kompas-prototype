@@ -3,13 +3,13 @@ FROM node:18-alpine
 WORKDIR /app
 
 # Copy package files
-COPY avans-keuze-kompas-backend/package*.json ./
+COPY package*.json ./
 
 # Install ALL deps (Nest CLI is in devDependencies)
 RUN npm install
 
 # Copy source
-COPY avans-keuze-kompas-backend .
+COPY . .
 
 # Build NestJS app
 RUN npm run build

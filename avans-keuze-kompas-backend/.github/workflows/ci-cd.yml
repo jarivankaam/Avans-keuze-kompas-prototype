@@ -1,0 +1,113 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - back-end
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint
+
+      - name: Build application
+        run: npm run build
+        env:
+          # Required environment variables for build
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_EXPIRATION: ${{ secrets.JWT_EXPIRATION || '1d' }}
+          CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
+          N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
+          PORT: ${{ secrets.PORT || '4000' }}
+          NODE_ENV: 'production'
+
+      - name: Run tests
+        run: npm run test
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_EXPIRATION: ${{ secrets.JWT_EXPIRATION || '1d' }}
+          CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
+          N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
+          PORT: ${{ secrets.PORT || '4000' }}
+          NODE_ENV: 'test'
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_EXPIRATION: ${{ secrets.JWT_EXPIRATION || '1d' }}
+          CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
+          N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
+          PORT: ${{ secrets.PORT || '4000' }}
+          NODE_ENV: 'production'
+
+      # OPTION A: Deploy to CapRover (uncomment if using CapRover)
+      # - name: Deploy to CapRover
+      #   uses: caprover/deploy-from-github@v1.0.1
+      #   with:
+      #     server: '${{ secrets.CAPROVER_SERVER }}'
+      #     app: '${{ secrets.CAPROVER_APP_NAME }}'
+      #     token: '${{ secrets.CAPROVER_APP_TOKEN }}'
+
+      # OPTION B: Deploy to server via SSH (uncomment if using SSH)
+      # - name: Deploy to production
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.DEPLOY_HOST }}
+      #     username: ${{ secrets.DEPLOY_USER }}
+      #     key: ${{ secrets.DEPLOY_SSH_KEY }}
+      #     script: |
+      #       cd /path/to/app
+      #       git pull origin main
+      #       npm ci
+      #       npm run build
+      #       pm2 restart avans-keuze-kompas-backend
+
+      # NOTE: If you're using CapRover's GitHub webhook, you don't need this deploy job at all.
+      # CapRover will auto-deploy when you push to the branch. See CAPROVER_DEPLOYMENT.md for details.

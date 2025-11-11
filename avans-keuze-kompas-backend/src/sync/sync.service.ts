@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { ConfigService } from '@nestjs/config';
 import { Model } from 'mongoose';
 import axios from 'axios';
 import { User } from '../users/schemas/user.schema';
@@ -7,13 +8,15 @@ import { Vkm } from '../vkm/schemas/vkm.schema';
 
 @Injectable()
 export class SyncService {
+  private readonly n8nWebhookUrl: string;
+
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
     @InjectModel(Vkm.name) private vkmModel: Model<Vkm>,
-  ) {}
-
-  private readonly n8nWebhookUrl =
-    'https://n8n.srv1048217.hstgr.cloud/webhook-test/a291d2db-bb14-4f78-b677-c0656f5bf00c';
+    private configService: ConfigService,
+  ) {
+    this.n8nWebhookUrl = this.configService.get<string>('n8n.webhookUrl');
+  }
 
   async sendAllUsersAndVkmToN8n() {
     const users = await this.userModel.find().select('group').exec();
