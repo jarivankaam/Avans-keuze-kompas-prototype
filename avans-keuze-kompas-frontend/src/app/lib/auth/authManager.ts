@@ -8,12 +8,11 @@ import { getConfig } from "../config";
 import { jwtDecode } from "jwt-decode";
 
 export interface JWTPayload {
-	email: string;
-	id?: number;
-	sub?: string;
+	username: string; // email address from backend
+	sub: string; // MongoDB ObjectId from backend
+	is_admin: boolean;
 	exp: number;
 	iat: number;
-	is_admin?: boolean;
 }
 
 export interface LoginResponse {

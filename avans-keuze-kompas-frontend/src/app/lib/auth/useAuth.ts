@@ -8,12 +8,6 @@
 import { useEffect, useState } from "react";
 import { getAuthManager, type JWTPayload, type AuthState } from "./authManager";
 
-type DecodedToken = {
-  email: string;
-  sub: string;
-  is_admin?: boolean;
-};
-
 export function useAuth() {
   const authManager = getAuthManager();
 
