@@ -15,7 +15,7 @@ export class SyncService {
     @InjectModel(Vkm.name) private vkmModel: Model<Vkm>,
     private configService: ConfigService,
   ) {
-    this.n8nWebhookUrl = this.configService.get<string>('n8n.webhookUrl');
+    this.n8nWebhookUrl = this.configService.get<string>('n8n.webhookUrl') || '';
   }
 
   async sendAllUsersAndVkmToN8n() {
