@@ -22,6 +22,29 @@ export function useAuth() {
   const [user, setUser] = useState<DecodedToken | null>(null);
 
   useEffect(() => {
+    // Check if user is logged in via cookie by calling /auth/me
+    async function checkSession() {
+      try {
+        const response = await fetch('http://akk-backend.panel.evonix-development.tech/auth/me', {
+          credentials: 'include', // Send cookies
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          // User is logged in via cookie
+          setUser({
+            email: data.email,
+            sub: data.userId,
+            is_admin: data.is_admin,
+          });
+          setTokenState('cookie'); // Placeholder to indicate logged in
+        }
+      } catch (err) {
+        console.log('No active session');
+      }
+    }
+
+    // First try localStorage (for backward compatibility)
     const stored = getToken();
     if (stored) {
       setTokenState(stored);
@@ -31,6 +54,9 @@ export function useAuth() {
       } catch (err) {
         console.error("Invalid token:", err);
       }
+    } else {
+      // If no localStorage token, check cookie
+      checkSession();
     }
   }, []);
 
