@@ -43,9 +43,39 @@ class AuthManager {
 	 * Use AuthManager.getInstance() instead
 	 */
 	private constructor() {
-		// Note: We no longer load from localStorage for security.
-		// Token is stored in memory only, and httpOnly cookie handles auth.
-		// On page reload, user state is lost - consider adding /auth/me endpoint
+		// On initialization, check if user is logged in via cookie
+		if (typeof window !== "undefined") {
+			this.initializeSession();
+		}
+	}
+
+	/**
+	 * Initialize session by checking if a valid cookie exists
+	 */
+	private async initializeSession(): Promise<void> {
+		try {
+			const response = await fetch(this.config.getApiUrl("/auth/me"), {
+				credentials: "include", // Send the httpOnly cookie
+			});
+
+			if (response.ok) {
+				const data = await response.json();
+				// We have a valid session, but we need the token to decode
+				// The backend should return the token or we reconstruct user info from the response
+				// For now, we'll create a minimal user object from the /me response
+				this.decodedToken = {
+					username: data.email,
+					sub: data.userId,
+					is_admin: data.is_admin,
+					exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60, // Assume 24h expiry
+					iat: Math.floor(Date.now() / 1000),
+				};
+				this.notifyAuthStateChange();
+			}
+		} catch (error) {
+			// No valid session, user needs to login
+			console.log("No active session");
+		}
 	}
 
 	/**
