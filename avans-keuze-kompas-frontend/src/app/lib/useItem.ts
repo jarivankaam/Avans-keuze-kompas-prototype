@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { getItems, createItem, updateItem } from './api';
-import { VKMInput } from "@/app/types/VKM";  // ✅ adjust path if needed
+import type { VKM } from "@/app/types/VKM";
+import VKMFactory from './factories/VKMFactory';
 
 export type Item = {
   _id: string;
@@ -21,7 +22,7 @@ export function useItems() {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Fetch items on mount
+  // Fetch items on mount
   useEffect(() => {
     getItems()
       .then(setItems)
@@ -29,44 +30,44 @@ export function useItems() {
       .finally(() => setLoading(false));
   }, []);
 
-  // ✅ Add
+  // Add new item using VKMFactory
   const addItem = async (item: { name: string; description: string }) => {
-    const payload: VKMInput = {
-      id: Date.now(),
-      name: item.name,
-      shortdescription: item.description,
-      content: "",
-      studycredit: 0,
-      location: "",
-      contact_id: 0,
-      level: "",
-    };
+    // Use VKMFactory to create a new VKM input object with validation
+    const payload = VKMFactory.createNew(item.name, item.description);
+
+    // Validate before sending
+    const validationErrors = VKMFactory.validate(payload);
+    if (validationErrors.length > 0) {
+      throw new Error(`Validation failed: ${validationErrors.join(', ')}`);
+    }
 
     const newItem = await createItem(payload);
     setItems(prev => [...prev, newItem]);
   };
 
-const editItem = async (id: string, item: { name: string; description: string }) => {
+  // Edit existing item using VKMFactory
+  const editItem = async (id: string, item: { name: string; description: string }) => {
     const existing = items.find(i => String(i._id) === String(id));
     if (!existing) return;
 
-    const payload: VKMInput = {
-        id: existing._id,
-        name: item.name,
-        shortdescription: item.description,
-        content: existing.content,
-        studycredit: existing.studycredit,
-        location: existing.location,
-        contact_id: existing.contact_id,
-        level: existing.level,
-    };
+    // Use VKMFactory to create updated VKM input from existing item
+    const payload = VKMFactory.createFromExisting(existing as unknown as VKM, {
+      name: item.name,
+      shortdescription: item.description,
+    });
+
+    // Validate before sending
+    const validationErrors = VKMFactory.validate(payload);
+    if (validationErrors.length > 0) {
+      throw new Error(`Validation failed: ${validationErrors.join(', ')}`);
+    }
 
     const updated = await updateItem(id, payload);
 
     setItems(prev => prev.map(i =>
-        String(i._id) === String(id) ? updated : i
+      String(i._id) === String(id) ? updated : i
     ));
-};
-  // ✅ ✅ Correct: return from the hook, not inside addItem
+  };
+
   return { items, loading, addItem, editItem };
 }

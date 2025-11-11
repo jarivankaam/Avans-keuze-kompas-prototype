@@ -1,15 +1,12 @@
-// lib/auth/useAuth.ts
+/**
+ * useAuth Hook - Refactored to use AuthManager Singleton
+ * Provides React state and effects for authentication
+ * Syncs with AuthManager singleton for consistent auth state across the app
+ */
 "use client";
 
 import { useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
-
-import {
-  loginUser,
-  getToken,
-  setToken as saveToken,
-  clearToken,
-} from "./authClient";
+import { getAuthManager, type JWTPayload, type AuthState } from "./authManager";
 
 type DecodedToken = {
   email: string;
@@ -18,40 +15,61 @@ type DecodedToken = {
 };
 
 export function useAuth() {
-  const [token, setTokenState] = useState<string | null>(null);
-  const [user, setUser] = useState<DecodedToken | null>(null);
+  const authManager = getAuthManager();
 
+  const [token, setTokenState] = useState<string | null>(null);
+  const [user, setUser] = useState<JWTPayload | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Subscribe to auth state changes from AuthManager
   useEffect(() => {
-    const stored = getToken();
-    if (stored) {
-      setTokenState(stored);
-      try {
-        const decoded = jwtDecode<DecodedToken>(stored);
-        setUser(decoded);
-      } catch (err) {
-        console.error("Invalid token:", err);
-      }
-    }
-  }, []);
+    // Initial state
+    const initialState = authManager.getAuthState();
+    setTokenState(initialState.token);
+    setUser(initialState.user);
+    setIsLoggedIn(initialState.isAuthenticated);
+
+    // Subscribe to changes
+    const unsubscribe = authManager.subscribe((state: AuthState) => {
+      setTokenState(state.token);
+      setUser(state.user);
+      setIsLoggedIn(state.isAuthenticated);
+    });
+
+    // Cleanup subscription on unmount
+    return unsubscribe;
+  }, [authManager]);
 
   async function login(email: string, password: string) {
-    const { access_token } = await loginUser(email, password);
-    saveToken(access_token);
-    setTokenState(access_token);
-
     try {
-      const decoded = jwtDecode<DecodedToken>(access_token);
-      setUser(decoded);
+      const response = await authManager.login(email, password);
+
+      // AuthManager automatically updates state, which will trigger our subscription
+      // But we can also get the immediate state
+      const state = authManager.getAuthState();
+      setTokenState(state.token);
+      setUser(state.user);
+      setIsLoggedIn(state.isAuthenticated);
+
+      return response;
     } catch (err) {
-      console.error("Token decode failed:", err);
+      console.error("Login failed:", err);
+      throw err;
     }
   }
 
   function logout() {
-    clearToken();
-    setTokenState(null);
-    setUser(null);
+    authManager.logout();
+    // State will be updated via subscription
   }
 
-  return { token, user, isLoggedIn: !!token, login, logout };
+  return {
+    token,
+    user,
+    isLoggedIn,
+    login,
+    logout,
+    // Expose auth manager for advanced usage
+    authManager
+  };
 }
