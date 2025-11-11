@@ -2,14 +2,14 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Copy package files from the backend subdirectory
+COPY ./avans-keuze-kompas-backend/package*.json ./
 
 # Install ALL deps (Nest CLI is in devDependencies)
 RUN npm install
 
-# Copy source
-COPY . .
+# Copy source code from the backend subdirectory
+COPY ./avans-keuze-kompas-backend/ .
 
 # Build NestJS app
 RUN npm run build

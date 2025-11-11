@@ -152,20 +152,22 @@ The `.env` file is for local development only and is already excluded by `.gitig
 
 ## Dockerfile Explanation
 
-Your Dockerfile is already set up correctly:
+Your Dockerfile is set up correctly for your repository structure:
 
 ```dockerfile
 FROM node:18-alpine
 WORKDIR /app
 
-# Copy and install dependencies
-COPY package*.json ./
+# Copy package files from the backend subdirectory
+COPY ./avans-keuze-kompas-backend/package*.json ./
+
+# Install ALL deps (Nest CLI is in devDependencies)
 RUN npm install
 
-# Copy source code
-COPY . .
+# Copy source code from the backend subdirectory
+COPY ./avans-keuze-kompas-backend/ .
 
-# Build application
+# Build NestJS app
 RUN npm run build
 
 # Remove dev dependencies
@@ -177,10 +179,25 @@ CMD ["node", "dist/main.js"]
 ```
 
 **Key points:**
+- ✅ The `captain-definition` at the root points to `./avans-keuze-kompas-backend/Dockerfile`
+- ✅ The Docker build context is the parent directory (project root)
+- ✅ COPY commands use `./avans-keuze-kompas-backend/` to access backend files
 - ✅ No `.env` file is copied (excluded by `.gitignore`)
 - ✅ Exposes port 4000 (configurable via `PORT` env var)
 - ✅ Runs the built production code
 - ✅ Environment variables come from CapRover at runtime
+
+**Repository Structure:**
+```
+Avans-keuze-kompas-prototype/          (CapRover build context starts here)
+├── captain-definition                  (Points to Dockerfile below)
+├── avans-keuze-kompas-backend/
+│   ├── Dockerfile                      (Build instructions)
+│   ├── package.json                    (Dependencies)
+│   ├── src/                            (Source code)
+│   └── ...
+└── ...
+```
 
 ---
 
