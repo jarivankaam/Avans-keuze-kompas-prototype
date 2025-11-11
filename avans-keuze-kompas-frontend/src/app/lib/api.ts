@@ -1,81 +1,66 @@
-import { getToken } from "./auth/authClient";
+/**
+ * API Functions - Refactored to use ApiClient Singleton
+ * This file maintains backward compatibility while using the new ApiClient
+ *
+ * NOTE: New code should import and use getApiClient() directly from apiClient.ts
+ * These functions are maintained for backward compatibility with existing code
+ */
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+import { getApiClient } from "./apiClient";
+import { getAuthManager } from "./auth/authManager";
+import type { VKMInput } from "@/app/types/VKM";
 
-function getAuthHeaders(): HeadersInit {
-  const token = getToken();
-  return token ? { Authorization: `Bearer ${token}` } : {};
-}
+// Initialize API client with auth token getter
+const apiClient = getApiClient();
+const authManager = getAuthManager();
 
+// Set the token getter for the API client
+apiClient.setTokenGetter(() => authManager.getToken());
+
+/**
+ * Get all VKM items
+ * @deprecated Use getApiClient().getVKMItems() instead
+ */
 export async function getItems() {
-  const res = await fetch(`${API_BASE}/vkm`, {
-    headers: getAuthHeaders(),
-    cache: "no-store",
-  });
-  if (!res.ok) throw new Error("Failed to fetch VKMs");
-  return res.json();
+	return apiClient.getVKMItems();
 }
 
+/**
+ * Get a single VKM item by ID
+ * @deprecated Use getApiClient().getVKMItem(id) instead
+ */
 export async function getItem(id: string) {
-  const res = await fetch(`${API_BASE}/vkm/${id}`, {
-    headers: getAuthHeaders(),
-    cache: "no-store",
-  });
-  if (!res.ok) throw new Error(`Failed to fetch VKM with id ${id}`);
-  return res.json();
+	return apiClient.getVKMItem(id);
 }
 
-export async function createItem(item: {
-  id: number;
-  shortdescription: string;
-  content: string;
-  studycredit: number;
-  location: string;
-  contact_id: number;
-  level: string;
-}) {
-  const res = await fetch(`${API_BASE}/vkm`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...getAuthHeaders(),
-    },
-    body: JSON.stringify(item),
-  });
-
-  if (!res.ok) {
-    const error = await res.json();
-    console.error("Create VKM failed:", error);
-    throw new Error("Failed to create item");
-  }
-
-  return res.json();
+/**
+ * Create a new VKM item
+ * @deprecated Use getApiClient().createVKMItem(item) instead
+ */
+export async function createItem(item: VKMInput) {
+	return apiClient.createVKMItem(item);
 }
 
-export async function updateItem(id: number, data: any) {
-  const res = await fetch(`${API_BASE}/vkm/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      ...getAuthHeaders(), // include JWT if needed
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!res.ok) {
-    const err = await res.json();
-    console.error("❌ Update VKM failed:", err);
-    throw new Error("Failed to update VKM");
-  }
-
-  return res.json();
+/**
+ * Update a VKM item
+ * @deprecated Use getApiClient().updateVKMItem(id, data) instead
+ */
+export async function updateItem(id: string | number, data: VKMInput) {
+	return apiClient.updateVKMItem(id, data);
 }
 
+/**
+ * Delete a VKM item
+ * @deprecated Use getApiClient().deleteVKMItem(id) instead
+ */
 export async function deleteItem(id: string) {
-  const res = await fetch(`${API_BASE}/vkm/${id}`, {
-    method: "DELETE",
-    headers: getAuthHeaders(),
-  });
-  if (!res.ok) throw new Error("Failed to delete VKM");
-  return res.json();
+	return apiClient.deleteVKMItem(id);
 }
+
+// Export the API client and auth manager for direct use
+export { apiClient, authManager };
+
+// Re-export for convenience
+export { getApiClient } from "./apiClient";
+export { getAuthManager } from "./auth/authManager";
+

@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Request, Res } from '@nestjs/common';
+import { Controller, Get, Post, UseGuards, Request, Res } from '@nestjs/common';
 import type { Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
@@ -20,6 +20,18 @@ export class AuthController {
     });
 
     return token; // ✅ frontend now gets { access_token }
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('me')
+  getProfile(@Request() req) {
+    // Returns the current user info from the JWT token
+    // The JWT strategy already extracts userId, email, and is_admin from the cookie
+    return {
+      userId: req.user.userId,
+      email: req.user.email,
+      is_admin: req.user.is_admin,
+    };
   }
 
   @Post('logout')
