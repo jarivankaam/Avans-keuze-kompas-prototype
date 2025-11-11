@@ -12,6 +12,7 @@ export interface JWTPayload {
 	id: number;
 	exp: number;
 	iat: number;
+	is_admin?: boolean;
 }
 
 export interface LoginResponse {
