@@ -18,9 +18,9 @@ export default function HeroSection({
   background,
 }: HeroSectionProps) {
   return (
-    <section className="py-20 px-5 max-h-[480px]">
+    <section className="px-5 max-h-[480px]">
       <div className="container mx-auto p-5 rounded-2xl" style={{ background }}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center p-[60px]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
           <div>
             <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl text-color">
               {heading}
@@ -29,10 +29,9 @@ export default function HeroSection({
           </div>
           <div className="max-h-[384px] overflow-hidden h-full w-full">
             <Image
+              className="w-full h-full"
               src={imageSrc}
               alt={imageAlt}
-              width={800}
-              height={600}
               sizes="(max-width: 800px) 100vw, 800px"
               objectFit="contain"
             />
