@@ -13,6 +13,7 @@ export default function Home() {
           description=""
           imageSrc="/hero.png"
           imageAlt="Hero image"
+          background="FF8B8B"
         />
         <ItemsView />
       </main>
