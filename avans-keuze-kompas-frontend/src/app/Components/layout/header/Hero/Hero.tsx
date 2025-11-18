@@ -22,7 +22,7 @@ export default function HeroSection({
       <div className="container mx-auto p-5 rounded-2xl" style={{ background }}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
           <div>
-            <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl text-color">
+            <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl text-white">
               {heading}
             </h1>
             {description && <p className="mt-4 text-lg">{description}</p>}
