@@ -7,11 +7,11 @@ export default function Home() {
   return (
     <>
       <Header />
-      <main className="flex justify-center items-center m-10">
+      <main className="flex flex-col justify-center items-center m-10">
         <HeroSection
           heading="Een keuzemodule uitkiezen? Wij helpen je!"
           description=""
-          imageSrc="hero.png"
+          imageSrc="/hero.png"
           imageAlt="Hero image"
         />
         <ItemsView />
