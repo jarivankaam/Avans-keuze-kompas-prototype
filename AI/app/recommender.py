@@ -9,6 +9,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
+
 # ---------- Generic helpers ----------
 
 
@@ -223,18 +224,25 @@ class GenericRecommender:
 
         # Role / domain tags
         if cfg.role_tag_cols and profile.role_include:
-            tags = []
+            tags: List[str] = []
             for col in cfg.role_tag_cols:
                 col_n = norm_col(col)
                 val = row.get(col_n)
                 if pd.notna(val):
-                    tags.extend(str(val).lower().split())
+                    # Split on non-word characters so "AI; Data, Innovatie"
+                    # becomes ["ai", "data", "innovatie"]
+                    raw = str(val).lower()
+                    tokens = re.split(r"\W+", raw)
+                    tokens = [t for t in tokens if t]  # remove empty strings
+                    tags.extend(tokens)
+
             tags_set = set(tags)
             needed = {t.lower() for t in profile.role_include}
             overlap = tags_set & needed
+
             if overlap:
                 scores.append(1.0)
-                reasons["role"] = f"Role/domain matches: {', '.join(overlap)}"
+                reasons["role"] = f"Role/domain matches: {', '.join(sorted(overlap))}"
             else:
                 scores.append(0.0)
                 reasons["role"] = f"No explicit role/domain overlap with {needed}"
@@ -257,8 +265,8 @@ class GenericRecommender:
         if vals.max() == vals.min():
             return np.ones(len(self.df))
         # Min-max normalize to [0,1]
-        norm = (vals - vals.min()) / (vals.max() - vals.min())
-        return norm.to_numpy()
+        norm_vals = (vals - vals.min()) / (vals.max() - vals.min())
+        return norm_vals.to_numpy()
 
     # ---------- Public API ----------
 
@@ -322,6 +330,10 @@ class GenericRecommender:
             }
         )
 
+        # Filter out clearly irrelevant items based on content similarity
+        MIN_CONTENT_SIM = 0.08  # Raise to 0.10 for stricter filtering
+        result = result[result["content_sim"] >= MIN_CONTENT_SIM]
+
         return result.sort_values("final_score", ascending=False).head(k)
 
     def diversity_score(self, indices: List[int]) -> float:
@@ -331,6 +343,6 @@ class GenericRecommender:
         sub = self.X[indices]
         sim = cosine_similarity(sub)
         n = len(indices)
-        mask = np.triu(np.ones((n, n), dtype=bool), k=1)
+        mask = np.trim(np.ones((n, n), dtype=bool), k=1)
         vals = sim[mask]
         return float(1.0 - vals.mean())

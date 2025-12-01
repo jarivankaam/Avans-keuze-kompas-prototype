@@ -55,30 +55,29 @@ def init_quiz_configs() -> Dict[str, QuizQuestionConfig]:
 def init_recommender() -> GenericRecommender:
     """
     Initialize the recommender from CSV and dataset config.
-    Change DatasetConfig to adapt to a different dataset.
+    Adapted to the VKM / modules dataset.
     """
     try:
         df = pd.read_csv(settings.dataset_path)
     except Exception as e:
         raise RuntimeError(f"Failed to load dataset at {settings.dataset_path}: {e}")
 
-    # Example config for a jobs dataset – adjust to your CSV columns.
+    # Config adapted to half_done_vkm_dataset.csv
     dataset_cfg = DatasetConfig(
-        id_col="job_id",
-        title_col="job_title",
+        id_col="id",                 # column in CSV
+        title_col="name",            # column in CSV
         text_cols=[
-            "short_description",
-            "full_description",
-            "responsibilities",
-            "required_skills",
-            "nice_to_have_skills",
-            "role_tags",
+            "shortdescription",      # korte beschrijving
+            "description",           # volledige beschrijving
+            "content",               # inhoud
+            "learningoutcomes",      # leeruitkomsten
+            "module_tags",           # tags, e.g. "AI; Data; Innovatie"
         ],
-        location_col="job_location",
-        salary_min_col="salary_min",
-        difficulty_col="difficulty",
-        popularity_col="views",  # or clicks / applicants / rating etc.
-        role_tag_cols=["role_tags"],
+        location_col="location",          # e.g. Breda, Den Bosch
+        salary_min_col=None,             # no salary data
+        difficulty_col="estimated_difficulty",
+        popularity_col="popularity_score",
+        role_tag_cols=["module_tags"],   # used with role_include in profile
     )
 
     return GenericRecommender(
