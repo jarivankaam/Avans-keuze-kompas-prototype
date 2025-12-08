@@ -62,7 +62,7 @@ export const Header = () => {
                     )}
                 </div>
             </div>
-            <div className="bg-[#c6002a] w-full h-[60px]"></div>
+            <div className="bg-[#c6002a] w-full h-[60px] shadow"></div>
         </header>
 
     </>
