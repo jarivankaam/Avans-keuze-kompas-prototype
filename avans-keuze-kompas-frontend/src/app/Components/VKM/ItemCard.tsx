@@ -27,7 +27,7 @@ export const ItemCard = ({ item, index }: Props) => {
         style={{ backgroundColor: bgColor, height: "175px" }}
       >
         <h2 className="text-lg font-semibold" style={{color: textColor}}>{item.name}</h2>
-        <p className="text-gray-600 truncate">{item.description}</p>
+        <p className="text-gray-600 truncate" style={{color: textColor}}>{item.description}</p>
       </div>
     </div>
   );
