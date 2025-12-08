@@ -7,7 +7,7 @@ type Props = {
 
 export const ItemCard = ({ item, index }: Props) => {
   let bgColor = index % 2 === 0 ? "#F8F8F8" : "#c6002a";
-  const textColor = bgColor == "c6002a" ? "white" : "black";
+  const textColor = bgColor == "#c6002a" ? "white" : "black";
   return (
     <div
       className="rounded shadow overflow-hidden"
