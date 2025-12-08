@@ -40,7 +40,7 @@ export const Header = () => {
                 </div>
             </div>
             <div className="bg-[#c6002a] w-full h-[60px] shadow">
-                <div className="flex gap-2 items-center justify-center w-100">
+                <div className="flex gap-2 items-center justify-center w-full h-full">
                     {user?.is_admin && (
                         <Link
                             href="/vkm"
