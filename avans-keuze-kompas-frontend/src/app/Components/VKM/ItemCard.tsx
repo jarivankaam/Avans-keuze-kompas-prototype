@@ -23,7 +23,7 @@ export const ItemCard = ({ item, index }: Props) => {
       </div>
       {/* Content section - bottom half */}
       <div
-        className="p-4"
+        className="p-4 rounded-b-[20px]"
         style={{ backgroundColor: bgColor, height: "175px" }}
       >
         <h2 className="text-lg font-semibold">{item.name}</h2>
