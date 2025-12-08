@@ -6,7 +6,7 @@ type Props = {
 };
 
 export const ItemCard = ({ item, index }: Props) => {
-  const bgColor = index % 2 === 0 ? "#F8F8F8" : "#FF8B8B";
+  const bgColor = index % 2 === 0 ? "#F8F8F8" : "#c6002a";
 
   return (
     <div
