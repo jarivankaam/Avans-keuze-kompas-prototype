@@ -6,8 +6,8 @@ type Props = {
 };
 
 export const ItemCard = ({ item, index }: Props) => {
-  const bgColor = index % 2 === 0 ? "#F8F8F8" : "#c6002a";
-
+  let bgColor = index % 2 === 0 ? "#F8F8F8" : "#c6002a";
+  const textColor = bgColor == "c6002a" ? "white" : "black";
   return (
     <div
       className="rounded shadow overflow-hidden"
@@ -26,7 +26,7 @@ export const ItemCard = ({ item, index }: Props) => {
         className="p-4 rounded-b"
         style={{ backgroundColor: bgColor, height: "175px" }}
       >
-        <h2 className="text-lg font-semibold">{item.name}</h2>
+        <h2 className="text-lg font-semibold" style={{color: textColor}}>{item.name}</h2>
         <p className="text-gray-600 truncate">{item.description}</p>
       </div>
     </div>
