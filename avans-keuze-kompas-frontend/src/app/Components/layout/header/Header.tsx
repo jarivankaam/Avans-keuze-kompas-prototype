@@ -7,6 +7,7 @@ export const Header = () => {
     const { isLoggedIn, logout, user } = useAuth();
 
     return (
+        <>
         <header className="p-5 flex justify-center items-center bg-white mb-5 sticky top-0 z-50 ">
             <div className="container flex justify-between items-center">
                 <div className="flex gap-2 items-center">
@@ -62,5 +63,7 @@ export const Header = () => {
                 </div>
             </div>
         </header>
+        <div className="p-20 bg-red-900 w-full"></div>
+    </>
     );
 };
