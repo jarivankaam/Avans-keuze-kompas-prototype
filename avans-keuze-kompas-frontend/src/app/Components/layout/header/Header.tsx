@@ -8,7 +8,7 @@ export const Header = () => {
 
     return (
         <>
-        <header className="p-5 flex justify-center items-center bg-white mb-5 sticky top-0 z-50 ">
+        <header className="py-5 flex justify-center items-center flex-col bg-white mb-5 sticky top-0 z-50 ">
             <div className="container flex justify-between items-center">
                 <div className="flex gap-2 items-center">
                     <svg
