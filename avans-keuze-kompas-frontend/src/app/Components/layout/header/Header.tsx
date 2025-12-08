@@ -32,10 +32,15 @@ export const Header = () => {
                         </g>
                     </svg>
 
-                    <h1 className="font-sans font-black text-4xl">KeuzeKompas</h1>
+
                 </div>
 
                 <div className="flex gap-4 items-center">
+                    <h1 className="font-sans font-black text-4xl">KeuzeKompas</h1>
+                </div>
+            </div>
+            <div className="bg-[#c6002a] w-full h-[60px] shadow">
+                <div className="flex gap-2">
                     {user?.is_admin && (
                         <Link
                             href="/vkm"
@@ -62,7 +67,6 @@ export const Header = () => {
                     )}
                 </div>
             </div>
-            <div className="bg-[#c6002a] w-full h-[60px] shadow"></div>
         </header>
 
     </>
