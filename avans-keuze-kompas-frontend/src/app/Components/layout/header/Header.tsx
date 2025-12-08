@@ -62,8 +62,9 @@ export const Header = () => {
                     )}
                 </div>
             </div>
+            <div className="p-20 bg-red-900 w-full h-[20px]"></div>
         </header>
-        <div className="p-20 bg-red-900 w-full"></div>
+
     </>
     );
 };
