@@ -44,7 +44,7 @@ export const Header = () => {
                     {user?.is_admin && (
                         <Link
                             href="/vkm"
-                            className="text-[#c6002a] font-semibold hover:text-[#a00021] transition"
+                            className="text-white font-semibold hover:text-[#a00021] transition"
                         >
                             Admin
                         </Link>
@@ -53,14 +53,14 @@ export const Header = () => {
                     {isLoggedIn ? (
                         <button
                             onClick={logout}
-                            className="text-[#c6002a] font-semibold hover:text-[#a00021] transition"
+                            className="text-white font-semibold hover:text-[#a00021] transition"
                         >
                             Logout
                         </button>
                     ) : (
                         <Link
                             href="/login"
-                            className="text-[#c6002a] font-semibold hover:text-[#a00021] transition"
+                            className="text-white font-semibold hover:text-[#a00021] transition"
                         >
                             Login
                         </Link>
