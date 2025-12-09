@@ -1,0 +1,11 @@
+{
+  "name": "eslint-ci-project",
+  "version": "1.0.0",
+  "description": "Project with ESLint CI integration",
+  "scripts": {
+    "lint": "eslint . -f sarif -o eslint-results.sarif"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0"
+  }
+}
